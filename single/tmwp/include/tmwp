@@ -1,0 +1,16 @@
+#ifndef __TMWP__
+#define __TMWP__
+namespace tmwp
+{
+class TMServer
+{
+private:
+int portNumber;
+public:
+TMServer();
+~TMServer();
+void start();
+void close();
+};
+}
+#endif
