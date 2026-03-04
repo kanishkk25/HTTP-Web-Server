@@ -4,8 +4,17 @@
 #include<map>
 #include<utility>
 using namespace std;
+
+/*
+	Namespace : tmwp
+	Purpose : contains all classes related to the TM Web Projector HTTP server library.
+*/
 namespace tmwp
 {
+/*
+	Class : Request
+	Pupose : Represent the HTTP request received from the client.
+	
 class Request
 {
 private:
@@ -28,15 +37,39 @@ void sendHeader();
 void write(string html);
 void close();
 };
+
+/*
+	Class : TMServer
+	Purpose : Main HTTP Server class
+
+	Responsibilites:
+	- Listens on given port number
+	- Accepts client connection
+	- Maps URL routes to handler functions
+	- Invoke the appropriate handler for each request
+*/
 class TMServer
 {
 private:
-int portNumber;
+int portNumber;		// port number on which server will listen
+
+/*
+	Maps URL path to handler funtion
+	Each URL is associated with a function that process the request.
+*/
 map<string,void (*)(Request &,Response &)> ptrMap;
 public:
-TMServer(int portNumber);
+TMServer(int portNumber);		// initialize server with port number
 ~TMServer();
+
+// starts the server and begins listening for client requests
 void start();
+
+/*
+	Registers a handler functions for specific URL
+	Exmaple:
+		tmserver.onRequest("/home",handlerFunctions);
+*/
 void onRequest(const char *url,void (*ptrOnRequest)(Request &,Response &));
 };
 }
