@@ -7,7 +7,7 @@ class TMServer
 private:
 int portNumber;
 public:
-TMServer();
+TMServer(int portNumber);
 ~TMServer();
 void start();
 void close();
