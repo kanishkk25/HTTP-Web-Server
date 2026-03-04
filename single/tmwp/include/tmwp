@@ -1,16 +1,43 @@
 #ifndef __TMWP__
 #define __TMWP__
+#include<iostream>
+#include<map>
+#include<utility>
+using namespace std;
 namespace tmwp
 {
+class Request
+{
+private:
+map<string,string> requestMap;
+public:
+Request();
+~Request();
+void set(string key,string value);
+string get(string key);
+};
+class Response
+{
+private:
+int clientSocketDescriptor;
+public:
+Response();
+~Response();
+void setDescriptor(int clientSocketDescriptor);
+void sendHeader();
+void write(string html);
+void close();
+};
 class TMServer
 {
 private:
 int portNumber;
+map<string,void (*)(Request &,Response &)> ptrMap;
 public:
 TMServer(int portNumber);
 ~TMServer();
 void start();
-void close();
+void onRequest(const char *url,void (*ptrOnRequest)(Request &,Response &));
 };
 }
 #endif
