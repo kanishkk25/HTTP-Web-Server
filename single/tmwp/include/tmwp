@@ -13,11 +13,24 @@ namespace tmwp
 {
 /*
 	Class : Request
-	Pupose : Represent the HTTP request received from the client.
-	
+	Purpose : Represent the HTTP request received from the client.
+*/
 class Request
 {
 private:
+
+/*
+	this map will store parsed request information in key-value format
+    	example:
+        URL: /register?name=Kanishk&city=Ujjain
+
+    	Stored as:
+        name -> kanishk
+        city -> Ujjain
+
+    This class allows handlers to access request data
+    using simple key lookups.
+*/
 map<string,string> requestMap;
 public:
 Request();
