@@ -52,6 +52,8 @@ Response();
 ~Response();
 void setDescriptor(int clientSocketDescriptor);
 void sendHeader();
+
+// user can write his / her html as a response using this write() function
 void write(string html);
 void close();
 };
