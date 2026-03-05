@@ -38,6 +38,11 @@ Request();
 void set(string key,string value);
 string get(string key);
 };
+
+/*
+	Class : Response
+	Purpose : This class allows programmer to write html as an response in their handler functions
+*/
 class Response
 {
 private:
