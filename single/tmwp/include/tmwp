@@ -55,6 +55,7 @@ void sendHeader();
 
 // user can write his / her html as a response using this write() function
 void write(string html);
+// after writing html using write user should call close() so the html response fo further
 void close();
 };
 
