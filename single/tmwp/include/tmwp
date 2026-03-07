@@ -35,7 +35,18 @@ map<string,string> requestMap;
 public:
 Request();
 ~Request();
+
+/*
+	set value to the key 
+	example:
+	name=kanishk
+	key is name, and value is kanishk
+*/
 void set(string key,string value);
+
+/*
+	get the value for the respected key
+*/
 string get(string key);
 };
 
@@ -55,6 +66,7 @@ void sendHeader();
 
 // user can write his / her html as a response using this write() function
 void write(string html);
+
 // after writing html using write user should call close() so the html response fo further
 void close();
 };
