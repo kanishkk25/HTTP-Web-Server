@@ -13,14 +13,14 @@ namespace tmwp
 {
 /*
 	Class : Request
-	Purpose : Represent the HTTP request received from the client.
+	Purpose : Represents the HTTP request received from the client.
 */
 class Request
 {
 private:
 
 /*
-	this map will store parsed request information in key-value format
+	Stores parsed request parameters in key-value format
     	example:
         URL: /register?name=Kanishk&city=Ujjain
 
@@ -37,22 +37,23 @@ Request();
 ~Request();
 
 /*
-	set value to the key 
-	example:
-	name=kanishk
-	key is name, and value is kanishk
+	Stores a value for the specified key 
+
+	Example:
+	key="name"
+	value="kanishk"
 */
 void set(string key,string value);
 
 /*
-	get the value for the respected key
+	Returns the value associated with the specified key
 */
 string get(string key);
 };
 
 /*
 	Class : Response
-	Purpose : This class allows programmer to write html as an response in their handler functions
+	Purpose : Represents the HTTP response sent back to client.
 */
 class Response
 {
@@ -64,10 +65,10 @@ Response();
 void setDescriptor(int clientSocketDescriptor);
 void sendHeader();
 
-// user can write his / her html as a response using this write() function
+// Writes HTML/contents as the response body
 void write(string html);
 
-// after writing html using write user should call close() so the html response fo further
+// Closes the client connection after sending response.
 void close();
 };
 
@@ -87,8 +88,8 @@ private:
 int portNumber;		// port number on which server will listen
 
 /*
-	Maps URL path to handler funtion
-	Each URL is associated with a function that process the request.
+	Maps URL path to handler funtions
+	Each URL is associated with a function that processes the request.
 */
 map<string,void (*)(Request &,Response &)> ptrMap;
 public:
@@ -99,9 +100,10 @@ TMServer(int portNumber);		// initialize server with port number
 void start();
 
 /*
-	Registers a handler functions for specific URL
-	Exmaple:
-		tmserver.onRequest("/home",handlerFunctions);
+	Registers a handler function for specific URL
+	
+	Example:
+	tmserver.onRequest("/home",handlerFunction);
 */
 void onRequest(const char *url,void (*ptrOnRequest)(Request &,Response &));
 };
