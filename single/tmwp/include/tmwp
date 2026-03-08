@@ -42,12 +42,17 @@ Request();
 	Example:
 	key="name"
 	value="kanishk"
+
+	only 
 */
+private:
 void set(string key,string value);
 
-/*
-	Returns the value associated with the specified key
-*/
+//	Allow TMServer to access the private set() method while parsing requests.
+friend class TMServer;
+
+//	Returns the value associated with the specified key
+public:
 string get(string key);
 };
 
