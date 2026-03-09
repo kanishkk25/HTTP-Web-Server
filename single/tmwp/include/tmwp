@@ -104,6 +104,9 @@ TMServer(int portNumber);		// initialize server with port number
 // starts the server and begins listening for client requests
 void start();
 
+// closes the server
+void close();
+
 /*
 	Registers a handler function for specific URL
 	

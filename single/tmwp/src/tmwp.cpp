@@ -4,16 +4,13 @@
 #include<utility>
 using namespace std;
 using namespace tmwp;
-
-map<string,string> requestMap;
-
 Request::Request()
 {
-
+// do nothing for now
 }
 Request::~Request()
 {
-
+// do nothing for now
 }
 void Request::set(string key,string value)
 {
@@ -26,11 +23,11 @@ string Request::get(string key)
 
 Response::Response()
 {
-
+// do nothgin for now
 }
 Response::~Response()
 {
-
+// do nothgin for now
 }
 void Response::setDescriptor(int clientSocketDescriptor)
 {
@@ -48,15 +45,21 @@ void Response::close()
 {
 
 }
+
+// Implementation of TMServer methods
 TMServer::TMServer(int portNumber)
 {
-
+this->portNumber=portNumber;
 }
 TMServer::~TMServer()
 {
-
+// do nothing for now
 }
 void TMServer::start()
+{
+
+}
+void TMServer::close()
 {
 
 }
