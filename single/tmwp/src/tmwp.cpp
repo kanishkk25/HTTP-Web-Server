@@ -88,7 +88,7 @@ return;
 // initialzes serverSocketInformation structure 
 serverSocketInformation.sin_family=AF_INET;
 serverSocketInformation.sin_port=htons(this->portNumber);
-// we want to listen on all IP of the machines
+// server shoould listen on all IP of the machines
 serverSocketInformation.sin_addr.s_addr=htonl(INADDR_ANY);
 
 // bind the socket descriptor to IP + Port
