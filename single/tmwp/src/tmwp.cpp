@@ -191,6 +191,7 @@ void TMServer::start()
 {
 char header[8192+1];  // extra 1 for '\0'
 char request[1024+1];  // extra 1 for '\0'
+char response[1024+1]; // extra 1 for '\0'
 
 int serverSocketDescriptor;
 int clientSocketDescriptor;
@@ -300,7 +301,7 @@ strcat(response,"<body>");
 strcat(response,"<h1 style='color: red'>Resource / not found</h1>");
 strcat(response,"</body>");
 strcat(response,"</html>");
-sprintf(header,"HTTP 200 OK\nContent-Type: text/html\nContent-Length: %d\nConnection: Keep-Alive\n\n",strlen(response);
+sprintf(header,"HTTP 200 OK\nContent-Type: text/html\nContent-Length: %d\nConnection: Keep-Alive\n\n",strlen(response));
 send(clientSocketDescriptor,header,strlen(header),0);
 send(clientSocketDescriptor,response,strlen(response),0);
 }
@@ -313,7 +314,7 @@ else
 }
 else
 {
-if(resource->isClientSideTechnology=='Y')
+if(request->isClientSideTechnology=='Y')
 {
 
 // resource->isClientSideTechnology=='Y' part ends
