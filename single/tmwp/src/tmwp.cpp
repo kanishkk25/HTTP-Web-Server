@@ -8,7 +8,6 @@
 using namespace std;
 using namespace tmwp;
 
-
 /*
 	struct : REQUEST
 	Purpose : this structure will store the data request received from header 
@@ -205,6 +204,8 @@ struct sockaddr_in clientSocketInformation;
 
 FILE *f;
 char m;
+long file_size;
+int i,toRead;
 
 // set up configurations for Windows platform
 WSADATA wsaData;
@@ -272,8 +273,6 @@ WSACleanup();
 return;
 }
 header[bytes_extracted]='\0';
-// for testing
-printf("%s\n",header);
 REQUEST *request=parseRequest(header);
 if(request==NULL)
 {
@@ -284,10 +283,10 @@ return;
 }
 if(request->resource==NULL)
 {
-f=fopen("index.html","r");
+f=fopen("index.html","rb");
 if(f==NULL)
 {
-f=fopen("index.htm","r");
+f=fopen("index.htm","rb");
 }
 if(f==NULL)
 {
@@ -307,8 +306,24 @@ send(clientSocketDescriptor,response,strlen(response),0);
 }
 else
 {
-
-
+fseek(f,0,SEEK_END);
+file_size=ftell(f);
+fseek(f,0,SEEK_SET);
+sprintf(header,"HTTP 200 OK\nContent-Type: text/html\nContent-Length: %d\nConnection: Keep-Alive\n\n",file_size);
+send(clientSocketDescriptor,header,strlen(header),0);
+i=0;
+while(i<file_size)
+{
+toRead=file_size-i;
+if(toRead>1024) toRead=1024;
+fread(response,toRead,1,f);
+if(feof(f))
+{
+break;
+}
+send(clientSocketDescriptor,response,toRead,0);
+i=i+1024;
+} // infinite loop to read from file ends
 }
 // request->resource==NULL part ends
 }
