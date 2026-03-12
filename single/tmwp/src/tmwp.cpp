@@ -281,6 +281,8 @@ closesocket(serverSocketDescriptor);
 WSACleanup();
 return;
 }
+if(request->isClientSideTechnology=='Y')
+{
 if(request->resource==NULL)
 {
 f=fopen("index.html","rb");
@@ -317,31 +319,29 @@ while(i<file_size)
 toRead=file_size-i;
 if(toRead>1024) toRead=1024;
 fread(response,toRead,1,f);
-if(feof(f))
-{
-break;
-}
 send(clientSocketDescriptor,response,toRead,0);
 i=i+1024;
 } // infinite loop to read from file ends
+fclose(f);
 }
 // request->resource==NULL part ends
 }
 else
 {
-if(request->isClientSideTechnology=='Y')
-{
 
-// resource->isClientSideTechnology=='Y' part ends
+
+
+// else part of request->resource==NULL ends
+}
+// resource->isClientSideTechnology=='Y' ends
 }
 else
 {
 
+
 // else part of resource->isClientSideTechnology=='Y' ends
 }
-// else part of request->resource==NULL ends
-}
-}
+} // infinite loop ends here
 closesocket(serverSocketDescriptor);
 WSACleanup();
 }
