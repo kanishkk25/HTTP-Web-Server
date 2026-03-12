@@ -202,11 +202,13 @@ int bytes_extracted;
 struct sockaddr_in serverSocketInformation;
 struct sockaddr_in clientSocketInformation;
 
+FILE *f;
+char m;
+
 // set up configurations for Windows platform
 WSADATA wsaData;
 WORD ver=MAKEWORD(1,1);
 WSAStartup(ver,&wsaData);
-
 
 // creates a socket descriptor
 serverSocketDescriptor=socket(AF_INET,SOCK_STREAM,0);
@@ -271,7 +273,6 @@ return;
 header[bytes_extracted]='\0';
 // for testing
 printf("%s\n",header);
-
 REQUEST *request=parseRequest(header);
 if(request==NULL)
 {
@@ -280,17 +281,56 @@ closesocket(serverSocketDescriptor);
 WSACleanup();
 return;
 }
-// for testing
-printf("METHOD : %s\n",request->method);
-printf("RESOURCE : %s\n",request->resource);
-printf("%c\n",request->isClientSideTechnology);
-printf("%s\n",request->mimeType);
+if(request->resource==NULL)
+{
+f=fopen("index.html","r");
+if(f==NULL)
+{
+f=fopen("index.htm","r");
+}
+if(f==NULL)
+{
+strcpy(response,"<!DOCTYPE HTML>");
+strcat(response,"<html lang='en'>");
+strcat(response,"<head>");
+strcat(response,"<meta charset='utf-8'>");
+strcat(response,"<title>Not Found</title>");
+strcat(response,"</head>");
+strcat(response,"<body>");
+strcat(response,"<h1 style='color: red'>Resource / not found</h1>");
+strcat(response,"</body>");
+strcat(response,"</html>");
+sprintf(header,"HTTP 200 OK\nContent-Type: text/html\nContent-Length: %d\nConnection: Keep-Alive\n\n",strlen(response);
+send(clientSocketDescriptor,header,strlen(header),0);
+send(clientSocketDescriptor,response,strlen(response),0);
+}
+else
+{
 
 
+}
+// request->resource==NULL part ends
+}
+else
+{
+if(resource->isClientSideTechnology=='Y')
+{
+
+// resource->isClientSideTechnology=='Y' part ends
+}
+else
+{
+
+// else part of resource->isClientSideTechnology=='Y' ends
+}
+// else part of request->resource==NULL ends
+}
 }
 closesocket(serverSocketDescriptor);
 WSACleanup();
 }
+
+// will be removed 
 void TMServer::close()
 {
 
