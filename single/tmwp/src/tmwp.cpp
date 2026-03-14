@@ -256,6 +256,7 @@ closesocket(serverSocketDescriptor);
 WSACleanup();
 return;
 }
+
 bytes_extracted=recv(clientSocketDescriptor,header,sizeof(header),0);
 if(bytes_extracted<0)
 {
