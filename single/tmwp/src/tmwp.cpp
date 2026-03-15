@@ -302,7 +302,7 @@ strcat(response,"<body>");
 strcat(response,"<h1 style='color: red'>Resource / not found</h1>");
 strcat(response,"</body>");
 strcat(response,"</html>");
-sprintf(header,"HTTP 200 OK\nContent-Type: text/html\nContent-Length: %d\nConnection: Keep-Alive\n\n",strlen(response));
+sprintf(header,"HTTP 200 OK\nContent-Type: text/html\nContent-Length: %d\nConnection: close\n\n",strlen(response));
 send(clientSocketDescriptor,header,strlen(header),0);
 send(clientSocketDescriptor,response,strlen(response),0);
 }
@@ -311,7 +311,7 @@ else
 fseek(f,0,SEEK_END);
 file_size=ftell(f);
 fseek(f,0,SEEK_SET);
-sprintf(header,"HTTP 200 OK\nContent-Type: text/html\nContent-Length: %d\nConnection: Keep-Alive\n\n",file_size);
+sprintf(header,"HTTP 200 OK\nContent-Type: text/html\nContent-Length: %d\nConnection: close\n\n",file_size);
 send(clientSocketDescriptor,header,strlen(header),0);
 i=0;
 while(i<file_size)
@@ -344,17 +344,29 @@ sprintf(tmp,"<h1 style='color: red'>Resource /%s not found</h1>",request->resour
 strcat(response,tmp);
 strcat(response,"</body>");
 strcat(response,"</html>");
-sprintf(header,"HTTP 200 OK\nContent-Type: text/html\nContent-Length: %d\nConnection: Keep-Alive\n\n",strlen(response));
+sprintf(header,"HTTP 200 OK\nContent-Type: text/html\nContent-Length: %d\nConnection: close\n\n",strlen(response));
 send(clientSocketDescriptor,header,strlen(header),0);
 send(clientSocketDescriptor,response,strlen(response),0);
 }
 else
 {
-
-
+fseek(f,0,SEEK_END);
+file_size=ftell(f);
+fseek(f,0,SEEK_SET);
+sprintf(header,"HTTP 200 OK\nContent-Type: text/html\nContent-Length: %d\nConnection: close\n\n",file_size);
+send(clientSocketDescriptor,header,strlen(header),0);
+i=0;
+while(i<file_size)
+{
+toRead=file_size-i;
+if(toRead>1024) toRead=1024;
+fread(response,toRead,1,f);
+send(clientSocketDescriptor,response,toRead,0);
+i=i+1024;
+} // infinite loop to read from file ends
+fclose(f);
 // else part of f==NULL ends
 }
-
 // else part of request->resource==NULL ends
 }
 // resource->isClientSideTechnology=='Y' ends
