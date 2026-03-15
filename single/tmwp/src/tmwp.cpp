@@ -206,7 +206,7 @@ FILE *f;
 char m;
 long file_size;
 int i,toRead;
-
+char tmp[1001];
 // set up configurations for Windows platform
 WSADATA wsaData;
 WORD ver=MAKEWORD(1,1);
@@ -328,8 +328,32 @@ fclose(f);
 }
 else
 {
+f=fopen(request->resource,"rb");
+if(f==NULL)
+{
+strcpy(response,"<!DOCTYPE HTML>");
+strcat(response,"<html lang='en'>");
+strcat(response,"<head>");
+strcat(response,"<meta charset='utf-8'>");
+strcat(response,"<title>Not Found</title>");
+strcat(response,"</head>");
+strcat(response,"<body>");
+
+sprintf(tmp,"<h1 style='color: red'>Resource /%s not found</h1>",request->resource);
+
+strcat(response,tmp);
+strcat(response,"</body>");
+strcat(response,"</html>");
+sprintf(header,"HTTP 200 OK\nContent-Type: text/html\nContent-Length: %d\nConnection: Keep-Alive\n\n",strlen(response));
+send(clientSocketDescriptor,header,strlen(header),0);
+send(clientSocketDescriptor,response,strlen(response),0);
+}
+else
+{
 
 
+// else part of f==NULL ends
+}
 
 // else part of request->resource==NULL ends
 }
