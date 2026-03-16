@@ -64,6 +64,30 @@ mimeType=(char *)malloc(sizeof(char)*16);
 if(mimeType==NULL) return NULL;
 strcpy(mimeType,"text/javascript");
 }
+if(extensionEquals(resource+indexOfDot+1,(char *)"jpg"))
+{
+mimeType=(char *)malloc(sizeof(char)*11);
+if(mimeType==NULL) return NULL;
+strcpy(mimeType,"image/jpeg");
+}
+if(extensionEquals(resource+indexOfDot+1,(char *)"jpeg"))
+{
+mimeType=(char *)malloc(sizeof(char)*11);
+if(mimeType==NULL) return NULL;
+strcpy(mimeType,"image/jpeg");
+}
+if(extensionEquals(resource+indexOfDot+1,(char *)"png"))
+{
+mimeType=(char *)malloc(sizeof(char)*10);
+if(mimeType==NULL) return NULL;
+strcpy(mimeType,"image/png");
+}
+if(extensionEquals(resource+indexOfDot+1,(char *)"ico"))
+{
+mimeType=(char *)malloc(sizeof(char)*13);
+if(mimeType==NULL) return NULL;
+strcpy(mimeType,"image/x-icon");
+}
 return mimeType;
 }
 
