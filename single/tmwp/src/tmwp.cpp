@@ -93,6 +93,12 @@ return mimeType;
 
 char isClientSideTechnology(char *resource)
 {
+int i=0;
+while(resource[i]!='\0' &&  resource[i]!='.')
+{
+i++;
+}
+if(resource[i]=='\0') return 'N';
 return 'Y';
 }
 
