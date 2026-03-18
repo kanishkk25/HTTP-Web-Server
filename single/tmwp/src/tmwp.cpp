@@ -18,6 +18,8 @@ char *method;
 char *resource;
 char isClientSideTechnologyResource;
 char *mimeType;
+int dataCount;
+char **data;
 }REQUEST;
 
 int extensionEquals(char *left,char *right)
@@ -45,7 +47,6 @@ if(resource==NULL) return NULL;
 if(length<4) return NULL;
 for(indexOfDot=length-1;indexOfDot>0 && resource[indexOfDot]!='.';indexOfDot--);
 if(indexOfDot<=0) return NULL;
-
 if(extensionEquals(resource+indexOfDot+1,(char *)"html"))
 {
 mimeType=(char *)malloc(sizeof(char)*9);
@@ -107,7 +108,7 @@ REQUEST * parseRequest(const char *header)
 REQUEST *request;
 char method[11];
 char resource[100001];
-int i,j;
+int i,j,si;
 
 if(header==NULL) return NULL;
 
@@ -119,17 +120,60 @@ method[i]=header[i];
 method[i]='\0';
 i=i+2;
 
-// extract the resource part
-j=0;
-for(;header[i]!='\0' && header[i]!=' ';i++,j++)
+int dataCount=0;
+char **data=NULL;
+
+if(strcmp("GET",method)==0)
 {
+// extract the resource part
+for(j=0;header[i]!='\0' && header[i]!=' ';i++,j++)
+{
+if(header[i]=='?') break;
 resource[j]=header[i];
 }
 resource[j]='\0';
+if(header[i]=='?')
+{
+si=i;
+while(header[i]!='\0' && header[i]!=' ')
+{
+if(header[i]=='&') dataCount++;
+i++;
+}
+dataCount++;
+
+data=(char **)malloc(sizeof(char *)*dataCount);
+int *pc=(int *)malloc(sizeof(int)*dataCount);
+i=si;
+j=0;
+while(header[i]!=' ' && header[i]!='\0')
+{
+if(header[i]=='&')
+{
+pc[j]=i;
+j++;
+}
+i++;
+}
+pc[j]=i;
+i=si+1;
+j=0;
+int howManyToPick;
+while(j<dataCount)
+{
+howManyToPick=pc[j]-i;
+data[j]=(char *)malloc(sizeof(char)*(howManyToPick+1));
+strncpy(data[j],header+i,howManyToPick);
+data[j][howManyToPick]='\0';
+i=pc[j]+1;
+j++;
+}
+} // if for ? encounter ends
+} // if for GET method ends
+
 // create REQUEST structure and populate it's members
 request=(REQUEST *)malloc(sizeof(REQUEST));
 if(request==NULL) return NULL;
-
 request->method=(char *)malloc(sizeof(char)*(strlen(method)+1));
 if(request->method==NULL)
 {
@@ -137,6 +181,10 @@ free(request);
 return NULL;
 }
 strcpy(request->method,method);
+
+request->dataCount=dataCount;
+request->data=data;
+
 if(resource[0]=='\0')
 {
 request->resource=NULL;
@@ -155,12 +203,6 @@ return NULL;
 strcpy(request->resource,resource);
 request->isClientSideTechnologyResource=isClientSideTechnologyResource(request->resource);
 request->mimeType=getMIMEType(request->resource);
-if(request->mimeType==NULL)
-{
-free(request->method);
-free(request->resource);
-return NULL;
-}
 }
 return request;
 }
@@ -404,6 +446,7 @@ fclose(f);
 else
 {
 
+printf("URL is : %s\n",request->resource);
 
 // else part of resource->isClientSideTechnologyResource=='Y' ends
 }
