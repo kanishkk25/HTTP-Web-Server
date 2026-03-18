@@ -16,7 +16,7 @@ typedef struct __request
 {
 char *method;
 char *resource;
-char isClientSideTechnology;
+char isClientSideTechnologyResource;
 char *mimeType;
 }REQUEST;
 
@@ -91,7 +91,7 @@ strcpy(mimeType,"image/x-icon");
 return mimeType;
 }
 
-char isClientSideTechnology(char *resource)
+char isClientSideTechnologyResource(char *resource)
 {
 int i=0;
 while(resource[i]!='\0' &&  resource[i]!='.')
@@ -140,7 +140,7 @@ strcpy(request->method,method);
 if(resource[0]=='\0')
 {
 request->resource=NULL;
-request->isClientSideTechnology='Y';
+request->isClientSideTechnologyResource='Y';
 request->mimeType=NULL;
 }
 else
@@ -153,7 +153,7 @@ free(request);
 return NULL;
 }
 strcpy(request->resource,resource);
-request->isClientSideTechnology=isClientSideTechnology(request->resource);
+request->isClientSideTechnologyResource=isClientSideTechnologyResource(request->resource);
 request->mimeType=getMIMEType(request->resource);
 if(request->mimeType==NULL)
 {
@@ -311,7 +311,7 @@ closesocket(serverSocketDescriptor);
 WSACleanup();
 return;
 }
-if(request->isClientSideTechnology=='Y')
+if(request->isClientSideTechnologyResource=='Y')
 {
 if(request->resource==NULL)
 {
@@ -399,13 +399,13 @@ fclose(f);
 }
 // else part of request->resource==NULL ends
 }
-// resource->isClientSideTechnology=='Y' ends
+// resource->isClientSideTechnologyResource=='Y' ends
 }
 else
 {
 
 
-// else part of resource->isClientSideTechnology=='Y' ends
+// else part of resource->isClientSideTechnologyResource=='Y' ends
 }
 } // infinite loop ends here
 closesocket(serverSocketDescriptor);
