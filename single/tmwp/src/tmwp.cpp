@@ -217,11 +217,19 @@ Request::~Request()
 }
 void Request::set(string key,string value)
 {
-
+map<string,string>::iterator i=requestMap.begin();
+if(key.size()==0) return;
+i=requestMap.find(key);
+if(i!=requestMap.end()) return;
+requestMap.insert(pair<string,string>(key,value));
 }
 string Request::get(string key)
 {
-
+map<string,string>::iterator i=requestMap.begin();
+if(key.size()==0) return string("");
+i=requestMap.find(key);
+if(i!=requestMap.end()) return i->second;
+return string("");
 }
 
 Response::Response()
@@ -445,9 +453,15 @@ fclose(f);
 }
 else
 {
-
 printf("URL is : %s\n",request->resource);
+if(request->data!=NULL)
+{
 
+}
+else
+{
+
+}
 // else part of resource->isClientSideTechnologyResource=='Y' ends
 }
 } // infinite loop ends here
@@ -462,5 +476,8 @@ void TMServer::close()
 }
 void TMServer::onRequest(const char *url,void (*ptrOnRequest)(Request &,Response &))
 {
-
+map<string,void (*)(Request &,Response &)>::iterator i=ptrMap.begin();
+i=ptrMap.find(url);
+if(i!=ptrMap.end()) return;
+ptrMap.insert(pair<string,void (*)(Request &,Response &)>(url,ptrOnRequest));
 }
