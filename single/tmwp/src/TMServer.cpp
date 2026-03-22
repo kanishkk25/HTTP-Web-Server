@@ -207,56 +207,6 @@ request->mimeType=getMIMEType(request->resource);
 return request;
 }
 
-Request::Request()
-{
-// do nothing for now
-}
-Request::~Request()
-{
-// do nothing for now
-}
-void Request::set(string key,string value)
-{
-map<string,string>::iterator i=requestMap.begin();
-if(key.size()==0) return;
-i=requestMap.find(key);
-if(i!=requestMap.end()) return;
-requestMap.insert(pair<string,string>(key,value));
-}
-string Request::get(string key)
-{
-map<string,string>::iterator i=requestMap.begin();
-if(key.size()==0) return string("");
-i=requestMap.find(key);
-if(i!=requestMap.end()) return i->second;
-return string("");
-}
-
-Response::Response()
-{
-// do nothgin for now
-}
-Response::~Response()
-{
-// do nothgin for now
-}
-void Response::setDescriptor(int clientSocketDescriptor)
-{
-
-}
-void Response::sendHeader()
-{
-
-}
-void Response::write(string html)
-{
-
-}
-void Response::close()
-{
-
-}
-
 // Implementation of TMServer methods
 TMServer::TMServer(int portNumber)
 {
