@@ -235,7 +235,7 @@ struct sockaddr_in clientSocketInformation;
 FILE *f;
 char m;
 long file_size;
-int i,toRead;
+int i,toRead,j;
 char tmp[1001];
 // set up configurations for Windows platform
 WSADATA wsaData;
@@ -404,13 +404,88 @@ fclose(f);
 else
 {
 printf("URL is : %s\n",request->resource);
-if(request->data!=NULL)
+map<string,void (*)(Request &,Response &)>::iterator iter=this->ptrMap.find(request->resource);
+if(iter==this->ptrMap.end())
 {
+strcpy(response,"<!DOCTYPE HTML>");
+strcat(response,"<html lang='en'>");
+strcat(response,"<head>");
+strcat(response,"<meta charset='utf-8'>");
+strcat(response,"<title>Not Found</title>");
+strcat(response,"</head>");
+strcat(response,"<body>");
+sprintf(tmp,"<h1 style='color:red'>Resource /%s not found</h1>",request->resource);
+strcat(response,tmp);
+strcat(response,"</body>");
+strcat(response,"</html>");
 
+sprintf(header,"HTTP/1.1 200 OK\nContent-Type: text/html\nContent-Length: %d\nConnection: close\n\n",strlen(response));
+
+send(clientSocketDescriptor,header,strlen(header),0);
+send(clientSocketDescriptor,response,strlen(response),0);
 }
 else
 {
+void (*ptr)(Request &,Response &);
+ptr=iter->second;
+if(ptr==NULL)
+{
+printf("Yahs\n");
+strcpy(response,"<!DOCTYPE HTML>");
+strcat(response,"<html lang='en'>");
+strcat(response,"<head>");
+strcat(response,"<meta charset='utf-8'>");
+strcat(response,"<title>Not Found</title>");
+strcat(response,"</head>");
+strcat(response,"<body>");
+sprintf(tmp,"<h1 style='color:red'>Resource /%s not found</h1>",request->resource);
+strcat(response,tmp);
+strcat(response,"</body>");
+strcat(response,"</html>");
 
+sprintf(header,"HTTP/1.1 200 OK\nContent-Type: text/html\nContent-Length: %d\nConnection: close\n\n",strlen(response));
+
+send(clientSocketDescriptor,header,strlen(header),0);
+send(clientSocketDescriptor,response,strlen(response),0);
+}
+else
+{
+Response res;
+Request req;
+char key[1001];
+char value[1001];
+
+for(i=0;i<request->dataCount;i++)
+{
+j=0;
+while(request->data[i][j]!='\0')
+{
+if(request->data[i][j]=='=')
+{
+key[j]='\0';
+req.set(key,request->data[i]+j+1);
+break;
+}
+else
+{
+key[j]=request->data[i][j];
+}
+j++;
+}
+}
+// free request->data;
+if(request->data!=NULL)
+{
+for(i=0;i<request->dataCount;i++)
+{
+free(request->data[i]);
+}
+free(request->data);
+}
+res.setDescriptor(clientSocketDescriptor);
+res.sendHeader();
+ptr(req,res);
+}
 }
 // else part of resource->isClientSideTechnologyResource=='Y' ends
 }
@@ -429,5 +504,6 @@ void TMServer::onRequest(const char *url,void (*ptrOnRequest)(Request &,Response
 map<string,void (*)(Request &,Response &)>::iterator i=ptrMap.begin();
 i=ptrMap.find(url);
 if(i!=ptrMap.end()) return;
+if(url[0]=='/') url=url+1;
 ptrMap.insert(pair<string,void (*)(Request &,Response &)>(url,ptrOnRequest));
 }
