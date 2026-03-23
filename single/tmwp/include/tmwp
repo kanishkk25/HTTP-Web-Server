@@ -43,7 +43,6 @@ Request();
 	key="name"
 	value="kanishk"
 
-	only 
 */
 private:
 void set(string key,string value);
