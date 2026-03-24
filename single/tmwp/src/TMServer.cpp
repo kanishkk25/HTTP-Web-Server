@@ -8,6 +8,10 @@
 using namespace std;
 using namespace tmwp;
 
+char * decoder(const char *);
+char getDecodedChar(const char *);
+
+
 /*
 	struct : REQUEST
 	Purpose : this structure will store the data request received from header 
@@ -453,8 +457,7 @@ else
 Response res;
 Request req;
 char key[1001];
-char value[1001];
-
+char *decoded;
 for(i=0;i<request->dataCount;i++)
 {
 j=0;
@@ -463,7 +466,9 @@ while(request->data[i][j]!='\0')
 if(request->data[i][j]=='=')
 {
 key[j]='\0';
-req.set(key,request->data[i]+j+1);
+decoded=decoder(request->data[i]+j+1);
+req.set(key,decoded);
+if(decoded!=NULL) free(decoded);
 break;
 }
 else
@@ -506,4 +511,88 @@ i=ptrMap.find(url);
 if(i!=ptrMap.end()) return;
 if(url[0]=='/') url=url+1;
 ptrMap.insert(pair<string,void (*)(Request &,Response &)>(url,ptrOnRequest));
+}
+
+
+// helper functions
+
+char * decoder(const char *url)
+{
+int i,j;
+char *decodedURL;
+char tmp[4];
+decodedURL=(char *)malloc(sizeof(char)*strlen(url));
+i=0;
+j=0;
+while(url[i]!='\0')
+{
+if(url[i]=='%')
+{
+tmp[0]=url[i];
+i++;
+tmp[1]=url[i];
+i++;
+tmp[2]=url[i];
+i++;
+tmp[3]='\0';
+decodedURL[j]=getDecodedChar(tmp);
+j++;
+}
+else if(url[i]=='+')
+{
+decodedURL[j]=' ';
+j++;
+i++;
+}
+else
+{
+decodedURL[j]=url[i];
+i++;
+j++;
+}
+}
+decodedURL[j]='\0';
+return decodedURL;
+}
+char getDecodedChar(const char *tmp)
+{
+if(strcmp(tmp,"%20")==0) return ' ';
+else if(strcmp(tmp,"%21")==0) return '!';
+else if(strcmp(tmp,"%22")==0) return '"';
+else if(strcmp(tmp,"%23")==0) return '#';
+else if(strcmp(tmp,"%24")==0) return '$';
+else if(strcmp(tmp,"%25")==0) return '%';
+else if(strcmp(tmp,"%26")==0) return '&';
+else if(strcmp(tmp,"%27")==0) return '\'';
+else if(strcmp(tmp,"%28")==0) return '(';
+else if(strcmp(tmp,"%29")==0) return ')';
+else if(strcmp(tmp,"%2A")==0) return '*';
+else if(strcmp(tmp,"%2B")==0) return '+';
+else if(strcmp(tmp,"%2C")==0) return ',';
+else if(strcmp(tmp,"%2D")==0) return '-';
+else if(strcmp(tmp,"%2E")==0) return '.';
+else if(strcmp(tmp,"%2F")==0) return '/';
+
+
+else if(strcmp(tmp,"%3A")==0) return ':';
+else if(strcmp(tmp,"%3B")==0) return ';';
+else if(strcmp(tmp,"%3C")==0) return '<';
+else if(strcmp(tmp,"%3D")==0) return '=';
+else if(strcmp(tmp,"%3E")==0) return '>';
+else if(strcmp(tmp,"%3F")==0) return '?';
+
+else if(strcmp(tmp,"%40")==0) return '@';
+
+else if(strcmp(tmp,"%5B")==0) return '[';
+else if(strcmp(tmp,"%5C")==0) return '\\';
+else if(strcmp(tmp,"%5D")==0) return ']';
+else if(strcmp(tmp,"%5E")==0) return '^';
+else if(strcmp(tmp,"%5F")==0) return '_';
+
+else if(strcmp(tmp,"%60")==0) return '`';
+
+else if(strcmp(tmp,"%7B")==0) return '{';
+else if(strcmp(tmp,"%7D")==0) return '}';
+else if(strcmp(tmp,"%7E")==0) return '~';
+else return ' ';
 }
