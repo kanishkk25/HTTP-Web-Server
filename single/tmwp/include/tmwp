@@ -4,13 +4,14 @@
 #include<map>
 #include<utility>
 using namespace std;
-
 /*
 	Namespace : tmwp
 	Purpose : contains all classes related to the TM Web Projector HTTP server library.
 */
 namespace tmwp
 {
+class TMServer;
+class Response;
 /*
 	Class : Request
 	Purpose : Represents the HTTP request received from the client.
@@ -19,6 +20,8 @@ class Request
 {
 private:
 int clientSocketDescriptor;
+TMServer *server;
+Response *response;
 /*
 	Stores parsed request parameters in key-value format
     	example:
@@ -53,6 +56,9 @@ friend class TMServer;
 public:
 
 void setDescriptor(int clientSocketDescriptor);
+void setTMServer(TMServer *server);
+void setResponse(Response *response);
+
 
 //	Returns the value associated with the specified key
 string get(string key);
@@ -121,6 +127,8 @@ void close();
 	tmserver.onRequest("/home",handlerFunction);
 */
 void onRequest(const char *url,void (*ptrOnRequest)(Request &,Response &));
+
+friend class Request;
 };
 }
 #endif
