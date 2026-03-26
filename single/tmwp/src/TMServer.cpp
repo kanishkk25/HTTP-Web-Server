@@ -407,7 +407,7 @@ fclose(f);
 }
 else
 {
-printf("URL is : %s\n",request->resource);
+//printf("URL is : %s\n",request->resource);
 map<string,void (*)(Request &,Response &)>::iterator iter=this->ptrMap.find(request->resource);
 if(iter==this->ptrMap.end())
 {
@@ -434,7 +434,6 @@ void (*ptr)(Request &,Response &);
 ptr=iter->second;
 if(ptr==NULL)
 {
-printf("Yahs\n");
 strcpy(response,"<!DOCTYPE HTML>");
 strcat(response,"<html lang='en'>");
 strcat(response,"<head>");
@@ -487,6 +486,7 @@ free(request->data[i]);
 }
 free(request->data);
 }
+req.setDescriptor(clientSocketDescriptor);
 res.setDescriptor(clientSocketDescriptor);
 res.sendHeader();
 ptr(req,res);
