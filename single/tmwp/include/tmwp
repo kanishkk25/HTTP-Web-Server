@@ -18,7 +18,7 @@ namespace tmwp
 class Request
 {
 private:
-
+int clientSocketDescriptor;
 /*
 	Stores parsed request parameters in key-value format
     	example:
@@ -50,9 +50,14 @@ void set(string key,string value);
 //	Allow TMServer to access the private set() method while parsing requests.
 friend class TMServer;
 
-//	Returns the value associated with the specified key
 public:
+
+void setDescriptor(int clientSocketDescriptor);
+
+//	Returns the value associated with the specified key
 string get(string key);
+
+void forward(string requestResource);
 };
 
 /*
@@ -63,11 +68,14 @@ class Response
 {
 private:
 int clientSocketDescriptor;
+
 public:
 Response();
 ~Response();
 void setDescriptor(int clientSocketDescriptor);
 void sendHeader();
+
+
 
 // Writes HTML/contents as the response body
 void write(string html);
