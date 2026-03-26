@@ -487,6 +487,8 @@ free(request->data[i]);
 free(request->data);
 }
 req.setDescriptor(clientSocketDescriptor);
+req.setTMServer(this);
+req.setResponse(&res);
 res.setDescriptor(clientSocketDescriptor);
 res.sendHeader();
 ptr(req,res);

@@ -35,6 +35,14 @@ void Request::setDescriptor(int clientSocketDescriptor)
 {
 this->clientSocketDescriptor=clientSocketDescriptor;
 }
+void Request::setTMServer(TMServer *server)
+{
+this->server=server;
+}
+void Request::setResponse(Response *response)
+{
+this->response=response;
+}
 
 void Request::forward(string requestResource)
 {
@@ -80,12 +88,31 @@ i=i+1024;
 }
 fclose(f);
 closesocket(this->clientSocketDescriptor);
-/* header has already been sent in TMServer through sendHeader method of Response class therefore we did not sent any header here though we close the connection
+/* header has already been sent in TMServer through sendHeader method of Response class therefore we did not send any header here although we closed the connection
 */
 }
 } // is file ends
 else
 {
-
+if(requestResource[0]=='/')
+{
+requestResource.erase(0,1);
+}
+map<string,void (*)(Request &,Response &)>::iterator i=server->ptrMap.find(requestResource);
+if(i==server->ptrMap.end())
+{
+closesocket(this->clientSocketDescriptor);
+return;
+}
+void (*ptr)(Request &,Response &)=i->second;
+if(ptr==NULL)
+{
+closesocket(this->clientSocketDescriptor);
+return;
+}
+else
+{
+ptr(*this,*response);
+}
 } // functions
 }
