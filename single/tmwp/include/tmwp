@@ -15,13 +15,22 @@ class Response;
 /*
 	Class : Request
 	Purpose : Represents the HTTP request received from the client.
+ 
+	This class request - related information such as:
+		- the client socket descriptor
+		- address of the TMServer which is handling the request
+		- address of the Response object associated with the Request
+		- parsed request in key-value form
+
+		Note: addresses of TMServer and Response class object stored for to 			forward the request
 */
 class Request
 {
 private:
-int clientSocketDescriptor;
-TMServer *server;
-Response *response;
+int clientSocketDescriptor;	   // client socket descriptor on which requesting is coming
+TMServer *server;		// Pointer to the server handling the request
+Response *response;		// Pointer to the associated response object
+
 /*
 	Stores parsed request parameters in key-value format
     	example:
@@ -35,6 +44,7 @@ Response *response;
     using simple key lookups.
 */
 map<string,string> requestMap;
+
 public:
 Request();
 ~Request();
@@ -56,13 +66,20 @@ friend class TMServer;
 public:
 
 void setDescriptor(int clientSocketDescriptor);
+
 void setTMServer(TMServer *server);
+
 void setResponse(Response *response);
 
 
 //	Returns the value associated with the specified key
 string get(string key);
 
+/*
+ 	Purpose:
+        	Used when the current request needs to be internally redirected
+        	to another handler or resource.
+*/
 void forward(string requestResource);
 };
 
@@ -73,15 +90,13 @@ void forward(string requestResource);
 class Response
 {
 private:
-int clientSocketDescriptor;
+int clientSocketDescriptor;	    // client socket descriptor on which requesting is coming
 
 public:
 Response();
 ~Response();
 void setDescriptor(int clientSocketDescriptor);
 void sendHeader();
-
-
 
 // Writes HTML/contents as the response body
 void write(string html);
