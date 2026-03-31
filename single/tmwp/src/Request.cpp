@@ -151,3 +151,36 @@ ptr(*this,*(this->response));
 }
 } // functions
 }
+
+void Request::setInt(string variable,int value)
+{
+char tmp[12];
+map<string,string>::iterator i=requestMap.begin();
+if(variable.size()==0) return;
+i=requestMap.find(variable);
+
+sprintf(tmp,"%d",value);
+
+if(i==requestMap.end())
+{
+requestMap.insert(pair<string,string>(variable,tmp));
+}
+else
+{
+i->second=tmp;
+}
+}
+
+int Request::getInt(string variable)
+{
+int value=0;
+map<string,string>::iterator i=requestMap.begin();
+if(variable.size()==0) return 0;
+i=requestMap.find(variable);
+if(i==requestMap.end())
+{
+return 0;
+}
+value=atoi(i->second.c_str());
+return value;
+}
