@@ -81,6 +81,17 @@ string get(string key);
         	to another handler or resource.
 */
 void forward(string requestResource);
+
+
+/*
+	Purpose:
+		Used when we have to share data across multiple services in one request
+*/
+//	Used to set a int type value to a variable
+void setInt(string variable,int value);
+
+//	Used to get a int type value of a varible (will be used by another serivce)
+int getInt(string variable);
 };
 
 /*
