@@ -44,21 +44,100 @@ void Request::setResponse(Response *response)
 this->response=response;
 }
 
-void Request::forward(string requestResource)
+void Request::forward(char *requestResource)
 {
-if(requestResource.size()==0) return;
+if(strlen(requestResource)==0) return;
 char header[8193];
 char response[1025];
 char tmp[1001];
+char variable[21];
+int i,k;
+char m;
+int flag;
 FILE *f;
 int isFile=0;
-for(int i=0;i<requestResource.size();i++)
+int dotIndexOf=-1;
+for(int i=0;i<strlen(requestResource);i++)
 {
-if(requestResource[i]=='.') isFile=1;
+if(requestResource[i]=='.')
+{
+isFile=1;
+dotIndexOf=i;
+break;
 }
-if(isFile==1)
+}
+if(isFile==1 && dotIndexOf!=-1)
 {
-f=fopen(requestResource.c_str(),"rb");
+printf("Sending file contents\n");
+printf("File name : %s, with extesion : %s\n",requestResource,requestResource+dotIndexOf+1);
+if(strcmp(requestResource+dotIndexOf+1,"sct")==0)
+{
+printf("Sending sct file contents\n");
+f=fopen(requestResource,"r");
+if(f==NULL)
+{
+// send back 404 error page
+}
+k=0;
+i=0;
+flag=0;
+while(1)
+{
+m=fgetc(f);
+if(feof(f)) break;
+if(m=='$')
+{
+flag=1;
+}
+else if(flag==1 && m=='{')
+{
+flag=2;
+}
+else if(flag==2 && m!='}')
+{
+variable[k]=m;
+k++;
+}
+else if(flag==2 && m=='}')
+{
+variable[k]='\0';
+k=0;
+flag=0;
+
+char number[11];
+int x=this->getInt(variable);
+sprintf(number,"%d",x);
+if(i>0)
+{
+send(this->clientSocketDescriptor,response,i,0);
+i=0;
+}
+send(this->clientSocketDescriptor,number,strlen(number),0);
+}
+else 
+{
+response[i]=m;
+i++;
+if(i==1024)
+{
+send(this->clientSocketDescriptor,response,1024,0);
+i=0;
+}
+flag=0;
+}
+} // reading from file loop ends
+if(i!=0)
+{
+send(this->clientSocketDescriptor,response,i,0);
+}
+fclose(f);
+closesocket(this->clientSocketDescriptor);
+} // if part for sct ends
+
+else
+{
+printf("Sending normal file contents\n");
+f=fopen(requestResource,"rb");
 if(f==NULL)
 {
 strcpy(response,"<!DOCTYPE HTML>");
@@ -68,7 +147,7 @@ strcat(response,"<meta charset='utf-8'>");
 strcat(response,"<title>Not Found</title>");
 strcat(response,"</head>");
 strcat(response,"<body>");
-sprintf(tmp,"<h1 style='color: red'>Resource /%s not found</h1>",requestResource.c_str());
+sprintf(tmp,"<h1 style='color: red'>Resource /%s not found</h1>",requestResource);
 strcat(response,tmp);
 strcat(response,"</body>");
 strcat(response,"</html>");
@@ -102,12 +181,13 @@ closesocket(this->clientSocketDescriptor);
 /* header has already been sent in TMServer through sendHeader method of Response class therefore we did not send any header here although we closed the connection
 */
 }
+}
 } // is file ends
 else
 {
 if(requestResource[0]=='/')
 {
-requestResource.erase(0,1);
+requestResource++;
 }
 map<string,void (*)(Request &,Response &)>::iterator i=server->ptrMap.find(requestResource);
 if(i==server->ptrMap.end())
@@ -119,7 +199,7 @@ strcat(response,"<meta charset='utf-8'>");
 strcat(response,"<title>Not Found</title>");
 strcat(response,"</head>");
 strcat(response,"<body>");
-sprintf(tmp,"<h1 style='color: red'>Resource /%s not found</h1>",requestResource.c_str());
+sprintf(tmp,"<h1 style='color: red'>Resource /%s not found</h1>",requestResource);
 strcat(response,tmp);
 strcat(response,"</body>");
 strcat(response,"</html>");
@@ -137,7 +217,7 @@ strcat(response,"<meta charset='utf-8'>");
 strcat(response,"<title>Not Found</title>");
 strcat(response,"</head>");
 strcat(response,"<body>");
-sprintf(tmp,"<h1 style='color: red'>Resource /%s not found</h1>",requestResource.c_str());
+sprintf(tmp,"<h1 style='color: red'>Resource /%s not found</h1>",requestResource);
 strcat(response,tmp);
 strcat(response,"</body>");
 strcat(response,"</html>");
