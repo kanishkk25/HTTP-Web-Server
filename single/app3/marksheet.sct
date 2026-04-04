@@ -1,0 +1,16 @@
+<!DOCTYPE HTML>
+<html lang='en'>
+<head>
+<meta charset='utf-8'>
+<title>ABC School, Ujjain</title>
+</head>
+<body>
+<h1>Marks of Student with roll number : ${rl}</h1>
+<h2> Physics : ${physics}</h2>
+<h2> Chemistry : ${chemistry}</h2>
+<h2> Maths : ${maths}</h2>
+<h2> English : ${english}</h2>
+<h2> Hindi : ${hindi}</h2>
+<a href='index.html'>Home</a>
+</body>
+</html>
