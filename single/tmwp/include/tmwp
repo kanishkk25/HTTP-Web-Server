@@ -80,7 +80,7 @@ string get(string key);
         	Used when the current request needs to be internally redirected
         	to another handler or resource.
 */
-void forward(string requestResource);
+void forward(char *requestResource);
 
 
 /*
