@@ -299,6 +299,7 @@ closesocket(serverSocketDescriptor);
 WSACleanup();
 return;
 }
+/*
 else if(bytes_extracted==0)
 {
 printf("Unable to accept request, server might be off\n");
@@ -306,6 +307,7 @@ closesocket(serverSocketDescriptor);
 WSACleanup();
 return;
 }
+*/
 header[bytes_extracted]='\0';
 REQUEST *request=parseRequest(header);
 if(request==NULL)
