@@ -3,49 +3,47 @@
 #include<string.h>
 #include<iostream>
 #include<fstream>
+#include<ctime>
 using namespace std;
 using namespace tmwp;
 
-void function_one(Request &request,Response &response)
+void dispatchTime(Request &request,Response &response)
 {
-request.setInt("abcd",23);
-request.setInt("pqr",3333);
-request.forward("/two");
-}
-void function_two(Request &request,Response &response)
-{
-char tmp[11];
-
-int x=request.getInt("abcd");
-int y=request.getInt("pqr");
-
+time_t t=time(0);
+char *now=ctime(&t);
 response.write("<!DOCTYPE HTML>");
 response.write("<html lang='en'>");
 response.write("<head>");
 response.write("<meta charset='utf-8'>");
-response.write("<title>ABCL School, Ujjain</title>");
+response.write("<title>The Clock</title>");
 response.write("</head>");
 response.write("<body>");
-response.write("<h1> Value of x : ");
-sprintf(tmp,"%d",x);
-response.write(tmp);
+response.write("<h1>");
+response.write(now);
 response.write("</h1>");
 response.write("<br>");
-response.write("<h1> Value of y : ");
-sprintf(tmp,"%d",y);
-response.write(tmp);
-response.write("</h1>");
+response.write("<a href='now'>Referesh</a><br>");
+response.write("<a href='index.html'>Home</a><br>");
 response.write("</body>");
 response.write("</html>");
-
 response.close();
+}
+
+void getCityView(Request &request,Response &response)
+{
+string cityCodeString=request.get("cityCode");
+int cityCode=atoi(cityCodeString.c_str());
+if(cityCode==1) request.forward((char *)"ujjain.html");
+else if(cityCode==2) request.forward((char *)"indore.html");
+else if(cityCode==3) request.forward((char *)"dewas.html");
+else request.forward((char *)"index.html");
 }
 int main()
 {
 TMServer tmServer(7070);
 
-tmServer.onRequest("/one",function_one);
-tmServer.onRequest("/two",function_two);
+tmServer.onRequest("/now",dispatchTime);
+tmServer.onRequest("/getCity",getCityView);
 
 tmServer.start();
 return 0;
