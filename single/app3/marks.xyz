@@ -5,7 +5,7 @@
 <title>ABC School, Ujjain</title>
 </head>
 <body>
-<h1>Marks of Student with roll number : ${rollNumber}</h1>
+<h1>Marks of Student with roll number : ${rl}</h1>
 <h2> Physics : ${physics}</h2>
 <h2> Chemistry : ${chemistry}</h2>
 <h2> Maths : ${maths}</h2>
