@@ -21,3 +21,5 @@ This is designed to understand how HTTP servers work internally including reques
 ## Build
 
 write this command to compile your program that usage tmwp library -
+
+g++ eg1.cpp -o eg1.exe -I ../include -L ../lib -ltmwp
